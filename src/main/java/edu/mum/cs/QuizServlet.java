@@ -29,17 +29,16 @@ public class QuizServlet extends HttpServlet {
         if(val.equals(answer)){
             totalScore++;
         }
+        //HashMap<Integer,int[]> resultsHashMap = Quiz.getMap();
 
-        HashMap<Integer,int[]> resultsHashMap = Quiz.loopThroughQuiz();
-
-        HttpSession session = req.getSession(false);
-        if (session == null){
-            List<Integer> list = new ArrayList<>(resultsHashMap.keySet());
-            Collections.shuffle(list);
-
-            Map<Integer, int[]> shuffleMap = new LinkedHashMap<>();
-            list.forEach(k->shuffleMap.put(k, resultsHashMap.get(k)));
+        if (req.getSession(false) == null){
+            HttpSession session = req.getSession();
+            session.setAttribute("quiz",new Quiz());
         }
+
+        Quiz obj = (Quiz) req.getSession().getAttribute("quiz");
+        //String returnedVal = req.getParameter("num");
+
         String output =
                 "</html>" +
                     "</body>" +
@@ -49,6 +48,7 @@ public class QuizServlet extends HttpServlet {
                                 "<p> Your current Score is "+ totalScore + "</p>" +
                                 "<p> Guess the next number in the sequence </p>" +
                                 "<p>" + Arrays.toString(numbers)+ "</p>" +
+                                "<input type=\"hidden\" name=\"ans\" value="+">" +
                                 "<p>Your answer : <input type=\"number\" name=\"num\" value="+">" + "</p>" +
                                 "<p><input type=\"submit\" value=\"Submit\">" + "</p>" +
                             "</form>" +
